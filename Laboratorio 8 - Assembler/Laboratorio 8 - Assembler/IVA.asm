@@ -31,7 +31,7 @@
 	feb_2023 DD 6022
 	mar_2023 DD 12783
 	apr_2023 DD 13043
-	may_2023 DD 150000
+	may_2023 DD 7520
 	iva DW 20
 	ivaResult DD 0
 	total DD 0
