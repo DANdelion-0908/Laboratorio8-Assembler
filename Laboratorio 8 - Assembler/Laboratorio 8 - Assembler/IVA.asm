@@ -20,9 +20,9 @@
 ; ExitProcess proto, dwExitCode:dword
 
 .data
-	jun_2022 DD 16106
+	jun_2022 DD 16100
 	jul_2022 DD 9278
-	aug_2022 DD 17600
+	aug_2022 DD 1760
 	sep_2022 DD 6160
 	oct_2022 DD 11113
 	nov_2022 DD 13386
@@ -31,7 +31,7 @@
 	feb_2023 DD 6022
 	mar_2023 DD 12783
 	apr_2023 DD 13043
-	may_2023 DD 7520
+	may_2023 DD 75200
 	iva DW 20
 	ivaResult DD 0
 	total DD 0
@@ -50,8 +50,9 @@
 	msgFacturacion11 db "Abril 2023 facturado: %i IVA: %i  ",0Ah,0
 	msgFacturacion12 db "Mayo 2023 facturado: %i IVA: %i  ",0Ah,0
 
-	msgIvaGen db "Total excede a Q%i. Cambiar a IVA general."
-	msgIvaSmol db "Total es menor a Q%i. Mantenerse pequeño contribuyente."
+	msgTotal db "El total facturado en los 12 meses fue Q%i",0Ah,0
+	msgIvaGen db "Cambiar a IVA general.",0Ah,0
+	msgIvaSmol db "Mantenerse en pequeño contribuyente.",0Ah,0
 .code
 	includelib libucrt.lib
 	includelib legacy_stdio_definitions.lib
@@ -87,7 +88,6 @@ main proc
 	mov dx, 0
 	div iva
 
-	add total, EAX
 	mov ivaResult, EAX
 
 	push dword PTR [ivaResult]
@@ -103,7 +103,6 @@ main proc
 	mov dx, 0
 	div iva
 
-	add total, EAX
 	mov ivaResult, EAX
 
 	push dword PTR [ivaResult]
@@ -120,7 +119,6 @@ main proc
 	mov dx, 0
 	div iva
 
-	add total, EAX
 	mov ivaResult, EAX
 
 	push dword PTR [ivaResult]
@@ -137,7 +135,6 @@ main proc
 	mov dx, 0
 	div iva
 
-	add total, EAX
 	mov ivaResult, EAX
 
 	push dword PTR [ivaResult]
@@ -154,7 +151,6 @@ main proc
 	mov dx, 0
 	div iva
 
-	add total, EAX
 	mov ivaResult, EAX
 
 	push dword PTR [ivaResult]
@@ -171,7 +167,6 @@ main proc
 	mov dx, 0
 	div iva
 
-	add total, EAX
 	mov ivaResult, EAX
 
 	push dword PTR [ivaResult]
@@ -188,7 +183,6 @@ main proc
 	mov dx, 0
 	div iva
 
-	add total, EAX
 	mov ivaResult, EAX
 
 	push dword PTR [ivaResult]
@@ -205,7 +199,6 @@ main proc
 	mov dx, 0
 	div iva
 
-	add total, EAX
 	mov ivaResult, EAX
 
 	push dword PTR [ivaResult]
@@ -222,7 +215,6 @@ main proc
 	mov dx, 0
 	div iva
 
-	add total, EAX
 	mov ivaResult, EAX
 
 	push dword PTR [ivaResult]
@@ -239,7 +231,6 @@ main proc
 	mov dx, 0
 	div iva
 
-	add total, EAX
 	mov ivaResult, EAX
 
 	push dword PTR [ivaResult]
@@ -256,7 +247,6 @@ main proc
 	mov dx, 0
 	div iva
 
-	add total, EAX
 	mov ivaResult, EAX
 
 	push dword PTR [ivaResult]
@@ -279,18 +269,22 @@ main proc
 	add EBX, apr_2023
 	add EBX, may_2023
 
+	
+
 	mov ECX, 150000
 
-	mov maximo, 150000
+	mov total, EBX
 
-	cmp EBX, ECX
+	cmp total, ECX
 	JA general
 	JBE small
 
 ; IVA General
 
 general:
-	push dword PTR [maximo]
+	push dword PTR [total]
+	push offset msgTotal
+	call printf
 	push offset msgIvaGen
 	call printf
 	push 0
@@ -299,7 +293,9 @@ general:
 ; Pequeño Contribuyente
 
 small:
-	push dword PTR [maximo]
+	push dword PTR [total]
+	push offset msgTotal
+	call printf
 	push offset msgIvaSmol
 	call printf
 	push 0
